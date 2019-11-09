@@ -1,0 +1,45 @@
+.game-map {
+  /* width: 100%; */
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.game-map td {
+  width: 50px;
+  height: 50px;
+  background: #eee;
+  border: 1px solid black;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.fightContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.player,
+.enemy,
+.actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.player img,
+.enemy img {
+  width: 200px;
+}
+
+.gameOptions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monsterBage {
+  fill: white;
+  color: white;
+  width: 20px;
+}
