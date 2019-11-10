@@ -11,17 +11,13 @@ import axios from 'axios';
 
 import requestRoutes from '../config/requestRoutes';
 
-const mock = [{userId: '123456', userName: 'Lala Kaka', createdAt: '2019-11-10'}, {userId: '987654', userName: 'Zaza Paka', createdAt: '2019-11-09'},];
-
 const Home = ({ history }) => {
     const [savedGames, setSavedGames] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleLoadGames = event => {
         setAnchorEl(event.currentTarget);
-        // api call to get list of loads
         axios.get(requestRoutes.allGame).then(response => setSavedGames(response.data)).catch(error => console.log(error));
-        setSavedGames(mock);
     };
 
     const handleStartGame = userGame => {

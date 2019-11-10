@@ -21,23 +21,26 @@ const Fight = ({ history }) => {
         if (!currentUser) {
             history.push('/');
         } else {
-            // api call for players settings {currentUser}
-            axios.get(requestRoutes.fight, {userId: currentUser}).then(response => {
-                setPlayerInfo(response.data.userInfo);
-                setEnemyInfo(response.data.enemy);
-            }).catch(error => console.log(error));
+            axios
+                .get(requestRoutes.fight, {userId: currentUser})
+                .then(response => {
+                    if (response.data.isWinner) {
+                        history.push('/game');
+                    }
+                    setPlayerInfo(response.data.userInfo);
+                    setEnemyInfo(response.data.enemy);
+                })
+                .catch(error => console.log(error));
         }
     }, [history])
 
     const handleFight = () => {
         const chance = Math.floor(Math.random() * 2) + 1;
-        let whoWin = '';
 
         if (chance === 1) {
             setPlayerInfo(prevInfo => {
                 if (prevInfo.hp - enemyInfo.damage <= 0) {
                     showPlayerDeath(true);
-                    whoWin = 'movie';
                 }
                 return {hp: prevInfo.hp - enemyInfo.damage, damage: prevInfo.damage};
             });
@@ -45,16 +48,13 @@ const Fight = ({ history }) => {
             setEnemyInfo(prevInfo => {
                 if (prevInfo.hp - playerInfo.damage <= 0) {
                     showEnemyDeath(true);
-                    whoWin = 'user';
+                    // api call to record user win
+                    axios
+                        .post(requestRoutes.endOfGame, {userId: localStorage.getItem('currentUser'), movieId: enemyInfo.id,})
+                        .catch(error => console.log(error));
                 }
                 return {id: prevInfo.id, poster: prevInfo.poster, hp: prevInfo.hp - playerInfo.damage, damage: playerInfo.damage};
             });
-        }
-        // api call to record who died
-        if (whoWin) {
-            axios
-                .post(requestRoutes.endOfGame, {userId: localStorage.getItem('currentUser'), movieId: enemyInfo.id, whoWin: whoWin})
-                .catch(error => console.log(error));
         }
     }
 
@@ -109,10 +109,14 @@ const Fight = ({ history }) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             open={playerDeath}
-            onClose={() => history.push('/game')}
+            onClose={() => {
+                localStorage.removeItem('currentUser');
+                history.push('/');
+            }}
         >
             <div className={classes.paper} style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center'}}>
-                <Typography>Unfortunately you died</Typography>
+                <Typography>Unfortunately you died.</Typography>
+                <Typography>Game over.</Typography>
             </div>
         </Modal>
 
