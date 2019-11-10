@@ -48,7 +48,6 @@ const Fight = ({ history }) => {
             setEnemyInfo(prevInfo => {
                 if (prevInfo.hp - playerInfo.damage <= 0) {
                     showEnemyDeath(true);
-                    // api call to record user win
                     axios
                         .post(requestRoutes.endOfGame, {userId: localStorage.getItem('currentUser'), movieId: enemyInfo.id,})
                         .catch(error => console.log(error));

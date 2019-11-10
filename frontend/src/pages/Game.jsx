@@ -88,7 +88,6 @@ const Game = ({ history }) => {
         if (!id) {
             history.push('/');
         } else {
-            // api call to get user progress
             axios.get(requestRoutes.userProgress, { userId: id}).then(res => {
                 if (res.data.movies.every(movie => movie.isDefeated)) {
                     setGameOver(true);
@@ -131,7 +130,6 @@ const Game = ({ history }) => {
     }
 
     const handleSaveGame = () => {
-        // api call to save progress
         if (localStorage.getItem('currentUser')) {
             axios.post(requestRoutes.saveGame, {userId: localStorage.getItem('currentUser')}).catch(err => console.log(err));
         } else {

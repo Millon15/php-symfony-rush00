@@ -30,12 +30,13 @@ const NewPlayer = ({ history }) => {
 
     const onCreatePlayer = () => {
         if (playerName) {
-            // api call
-            axios.get(requestRoutes.createUser).then(response => {
-                localStorage.setItem('currentUser', response.data.id);
-                history.push('/game');
-            }).catch(error => console.log(error));
-            localStorage.setItem('currentUser', '123');
+            axios
+                .get(requestRoutes.createUser)
+                .then(response => {
+                    localStorage.setItem('currentUser', response.data.id);
+                    history.push('/game');
+                })
+                .catch(error => console.log(error));
         }
     }
 
