@@ -31,7 +31,7 @@ const NewPlayer = ({ history }) => {
     const onCreatePlayer = () => {
         if (playerName) {
             axios
-                .get(requestRoutes.createUser)
+                .post(requestRoutes.createUser, {userName: playerName})
                 .then(response => {
                     localStorage.setItem('currentUser', response.data.id);
                     history.push('/game');
