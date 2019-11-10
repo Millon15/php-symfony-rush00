@@ -7,11 +7,6 @@ create_user:
   controller: App\Controller\UserController::createUser
   methods:    POST
 
-#save_game:
-#  path:       /save-game
-#  controller: App\Controller\UserController::saveGame
-#  methods:    POST
-
 #saved_games:
 #  path:       /saved-games
 #  controller: App\Controller\UserController::savedGames
