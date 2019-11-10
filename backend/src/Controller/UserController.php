@@ -25,12 +25,35 @@ class UserController
     {
         $request_content = json_decode($request->getContent(), true);
         $userName = $request_content['userName'];
+        if (!$userName) {
+            throw new \RuntimeException("Can't retreive user name!");
+        }
 
         $id = md5(random_int(1, 10000) . random_int(1, 10000));
         $user = ['id' => $id, 'userName' => $userName];
 
-        $userFile->update($id, $user);
+        $userFile->write($id, $user);
 
-        return ControllerHelper::buildResponse($id, false);
+        return new Response($id);
     }
+
+    // /**
+    //  * @param FileWriter $userFile
+    //  * @param Request    $request
+    //  *
+    //  * @return Response
+    //  * @throws \Exception
+    //  */
+    // public function saveGame(FileWriter $userFile, Request $request): Response
+    // {
+    //     $request_content = json_decode($request->getContent(), true);
+    //     $userName = $request_content['userId'];
+    //
+    //     $id = md5(random_int(1, 10000) . random_int(1, 10000));
+    //     $user = ['id' => $id, 'userName' => $userName];
+    //
+    //     $userFile->write($id, $user);
+    //
+    //     return ControllerHelper::buildResponse($id, false);
+    // }
 }
