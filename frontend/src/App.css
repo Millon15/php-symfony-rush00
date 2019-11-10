@@ -1,5 +1,8 @@
+body {
+  background: #f5f5f5;
+}
+
 .game-map {
-  /* width: 100%; */
   border-collapse: collapse;
   margin: 0 auto;
 }
@@ -26,6 +29,11 @@
   justify-content: flex-start;
 }
 
+.actions {
+  justify-content: space-evenly;
+  margin: 0 10px;
+}
+
 .player img,
 .enemy img {
   width: 200px;
@@ -42,4 +50,38 @@
   fill: white;
   color: white;
   width: 20px;
+}
+
+.worldMap {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.moviemonsterItem {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.moviemonsterPic {
+  width: 200px;
+}
+
+.notDefeated {
+  filter: grayscale(100%);
+}
+
+.customLink {
+  color: white;
+  text-decoration: none;
+}
+
+.customLink:visited {
+  color: white;
+}
+
+.svgContainer > svg {
+  width: 22px;
+  fill: rgba(255, 255, 255, 0.8);
 }

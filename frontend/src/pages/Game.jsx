@@ -7,13 +7,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
-import iconSrc from '../assets/monster-svgrepo-com.svg';
+import MonsterIcon from '../assets/MonsterIcon';
+import axios from 'axios';
+
+import requestRoutes from '../config/requestRoutes';
 
 const Game = ({ history }) => {
     const gameMap = new Array(5).fill(new Array(5).fill(0));
     const [curPosition, setCurPosition] = useState([2, 2]);
     const [open, setOpen] = useState(false);
     const [capturedMonsters, setCapturedMonsters] = useState(0);
+    const [victoriousModal, setVictoriousModal] = useState(false);
+    const [isGameOver, setGameOver] = useState(false);
 
     const summonDemon = useCallback(() => {
         const chance = Math.floor(Math.random() * 4) + 1;
@@ -23,7 +28,7 @@ const Game = ({ history }) => {
     }, []);
 
     const handleUserKeyPress = useCallback(event => {
-        if (open) return;
+        if (open || isGameOver) return;
         switch (event.keyCode) {
             case 37:
             // left
@@ -68,7 +73,7 @@ const Game = ({ history }) => {
             default:
                 break;
         }
-    }, [summonDemon, open])
+    }, [summonDemon, open, isGameOver])
 
     useEffect(() => {
         window.addEventListener('keydown', handleUserKeyPress);
@@ -79,19 +84,24 @@ const Game = ({ history }) => {
     }, [handleUserKeyPress]);
 
     useEffect(() => {
-        const name = localStorage.getItem('curentUser');
-        if (!name) {
+        const id = localStorage.getItem('currentUser');
+        if (!id) {
             history.push('/');
         } else {
-            // api call to get progress
-            // check if user completely won
+            // api call to get user progress
+            axios.get(requestRoutes.userProgress, { userId: id}).then(res => {
+                if (res.data.movies.every(movie => movie.isDefeated)) {
+                    setGameOver(true);
+                    setVictoriousModal(true);
+                    setCapturedMonsters(10);
+                } else {
+                    setCapturedMonsters(res.data.movies.filter(mov => mov.isDefeated).length);
+                }
+                setCurPosition(res.data.pos);
+            }).catch(err => console.log(err));
             setCapturedMonsters(1);
         }
     }, [history]);
-
-    const handleFight = () => {
-        history.push('/fight');
-    };
 
     const useStyles = makeStyles(theme => ({
         paper: {
@@ -109,6 +119,9 @@ const Game = ({ history }) => {
             display: 'flex',
             justifyContent: 'flex-end'
         },
+        appBar: {
+            marginBottom: '20px',
+        },
     }));
     const classes = useStyles();
 
@@ -119,20 +132,27 @@ const Game = ({ history }) => {
 
     const handleSaveGame = () => {
         // api call to save progress
+        if (localStorage.getItem('currentUser')) {
+            axios.post(requestRoutes.saveGame, {userId: localStorage.getItem('currentUser')}).catch(err => console.log(err));
+        } else {
+            history.push('/');
+        }
     }
 
     return (
         <Container maxWidth="sm">
-            <AppBar position="static">
-            <div className={classes.sectionDesktop}>
-                <Link to="/world-map">
-                    <IconButton aria-label="show captured monsters count" color="inherit" className={classes.button}>
-                        <Badge badgeContent={capturedMonsters} color="secondary" size="small">
-                            <img src={iconSrc} className="monsterBage" alt="captured monster count" />
-                        </Badge>
-                    </IconButton>
-                </Link>
-            </div>
+            <AppBar position="static" className={classes.appBar}>
+                <div className={classes.sectionDesktop}>
+                    <Link to="/world-map">
+                        <IconButton aria-label="show captured monsters count" color="inherit" className={classes.button}>
+                            <Badge badgeContent={capturedMonsters} color="secondary" size="small">
+                                <span className="svgContainer">
+                                    <MonsterIcon />
+                                </span>
+                            </Badge>
+                        </IconButton>
+                    </Link>
+                </div>
             </AppBar>
             <table className="game-map">
                 <tbody>
@@ -150,7 +170,7 @@ const Game = ({ history }) => {
 
             <div className="gameOptions">
                 <Button variant="contained" color="secondary" onClick={handleLeaveGame}>Cancel</Button>
-                <Button variant="contained" color="primary" onClick={handleSaveGame}>Save</Button>
+                {!isGameOver &&<Button variant="contained" color="primary" onClick={handleSaveGame}>Save</Button>}
             </div>
 
             <Modal
@@ -162,10 +182,21 @@ const Game = ({ history }) => {
                 <div className={classes.paper} style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center'}}>
                     <Typography>You faced with a moovie monster.</Typography>
                     <Typography>Would you like to fight?</Typography>
-                    <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                    <div style={{display: 'flex', justifyContent: 'space-around', marginTop: '20px'}}>
                         <Button color="secondary" variant="contained" onClick={() => setOpen(false)}>No</Button>
-                        <Button color="primary" variant="contained" onClick={() => handleFight()}>Yes</Button>
+                        <Button color="primary" variant="contained" onClick={() => history.push('/fight')}>Yes</Button>
                     </div>
+                </div>
+            </Modal>
+
+            <Modal
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+                open={victoriousModal}
+                onClose={() => setVictoriousModal(false)}
+            >
+                <div className={classes.paper} style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center'}}>
+                    <Typography variant="h5" component="h3">You are the winner!</Typography>
                 </div>
             </Modal>
         </Container>

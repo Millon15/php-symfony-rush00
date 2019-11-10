@@ -12,7 +12,7 @@ const App = () => {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const name = localStorage.getItem('curentUser');
+    const name = localStorage.getItem('currentUser');
     if (name) {
       setUserName(userName);
     }
