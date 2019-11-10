@@ -31,7 +31,7 @@ const NewPlayer = ({ history }) => {
     const onCreatePlayer = () => {
         if (playerName) {
             // api call
-            axios.get(requestRoutes.allGame).then(response => {
+            axios.get(requestRoutes.createUser).then(response => {
                 localStorage.setItem('currentUser', response.data.id);
                 history.push('/game');
             }).catch(error => console.log(error));

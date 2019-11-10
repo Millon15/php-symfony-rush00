@@ -1,10 +1,10 @@
 const requestRoutes = {
-    createUser: '/create-user',
-    saveGame: '/save-game',
-    allGames: '/saved-game',
-    userProgress: '/user-progress',
-    fight: '/fight-conditions',
-    endOfGame: '/game-over',
+    createUser: 'http://localhost:8000/create-user',
+    saveGame: 'http://localhost:8000/save-game',
+    allGames: 'http://localhost:8000/saved-game',
+    userProgress: 'http://localhost:8000/user-progress',
+    fight: 'http://localhost:8000/fight-conditions',
+    endOfGame: 'http://localhost:8000/game-over',
 }
 
 export default requestRoutes;
