@@ -19,8 +19,11 @@ class UserController
      * @param Request    $request
      *
      * @return Response
-     * @throws \Exception
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws \Exception
      */
     public function createUser(FileWriter $userFile, Request $request): Response
     {
@@ -33,14 +36,38 @@ class UserController
         $client = HttpClient::create();
         $userId = '';
         $movies = [];
+        $const = 1000000;
         for ($i = 0; $i < 10; ++$i) {
-            if ($i === 0) {
-                $i = 1;
-            }
-            $page = random_int($i * 10000, 99999);
+            $page = random_int($const / 1000, $const - 1);
+            $page = (string)($const + $page);
+            $page[0] = 0;
+            do {
+                $response = json_decode($client
+                    ->request('GET', "http://www.omdbapi.com/?i=tt0{$page}&apikey=3fe767b6")
+                    ->getContent(), true);
+            } while ($response['Response'] !== 'True');
+
+            $movie = [
+                'poster' => (($response['Poster'] ?? 'N/A') === 'N/A')
+                    ? 'https://eu.movieposter.com/posters/archive/main/13/MPW-6725'
+                    : $response['Poster'],
+                'name' => $response['Title'],
+                'plot' => $response['Plot'] ?? 'N/A',
+                'year' => $response['Year'] ?? 'N/A',
+                'rated' => $response['Rated'] ?? 'N/A',
+                'released' => $response['Released'] ?? 'N/A',
+                'runtime' => $response['Runtime'] ?? 'N/A',
+                'genre' => $response['Genre'] ?? 'N/A',
+                'director' => $response['Director'] ?? 'N/A',
+                'writer' => $response['Writer'] ?? 'N/A',
+                'actors' => $response['Actors'] ?? 'N/A',
+                'language' => $response['Language'] ?? 'N/A',
+                'country' => $response['Country'] ?? 'N/A',
+                'isDefeated' => false,
+            ];
+
+            $movies[] = $movie;
             $userId .= $page;
-            $response = $client->request('GET', "http://www.omdbapi.com/?i=tt00{$page}&apikey=3fe767b6");
-            $movies[] = json_decode($response->getContent(), true);
         }
 
         $createdAt = date('d-m-Y H:i:s');
@@ -56,5 +83,21 @@ class UserController
         $userFile->write($userId, $user);
 
         return new Response($userId);
+    }
+
+    public function savedGames(FileWriter $userFile): Response
+    {
+        $users = $userFile->read();
+
+        $usersToReturn = [];
+        foreach ($users as $user) {
+            $usersToReturn[] = [
+                'userName' => $user['userName'],
+                'userId' => $user['userId'],
+                'createdAt' => $user['createdAt'],
+            ];
+        }
+
+        return new Response(json_encode($usersToReturn));
     }
 }
