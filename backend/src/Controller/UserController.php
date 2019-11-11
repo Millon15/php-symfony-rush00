@@ -38,13 +38,13 @@ class UserController extends AbstractController
         $userId = '';
         $movies = [];
         $const = 1000000;
-        for ($i = 0; $i < 10; ++$i) {
-            $page = random_int($const / 1000, $const - 1);
+        for ($i = 1; $i <= 10; ++$i) {
+            $page = random_int((int)($const / (1000 * $i)), $const - 1);
             $page = (string)($const + $page);
             $page[0] = 0;
             do {
                 $response = json_decode($client
-                    ->request('GET', "http://www.omdbapi.com/?i=tt0{$page}&apikey=3fe767b6")
+                    ->request('GET', "http://www.omdbapi.com/?i=tt0{$page}&type=movie&apikey=3fe767b6")
                     ->getContent(), true);
             } while ($response['Response'] !== 'True');
 
@@ -68,7 +68,7 @@ class UserController extends AbstractController
             ];
 
             $movies[] = $movie;
-            $userId .= $page;
+            $userId .= $page[strlen((string)$const) - 2];
         }
 
         $createdAt = date('d-m-Y H:i:s');
@@ -86,6 +86,11 @@ class UserController extends AbstractController
         return new Response($userId);
     }
 
+    /**
+     * @param FileWriter $userFile
+     *
+     * @return Response
+     */
     public function savedGames(FileWriter $userFile): Response
     {
         $users = $userFile->read();
@@ -102,6 +107,12 @@ class UserController extends AbstractController
         return $this->json($usersToReturn);
     }
 
+    /**
+     * @param FileWriter $userFile
+     * @param Request    $request
+     *
+     * @return Response
+     */
     public function userProgress(FileWriter $userFile, Request $request): Response
     {
         $userId = json_decode($request->getContent(), true)['userId']
