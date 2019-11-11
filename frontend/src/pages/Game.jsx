@@ -88,7 +88,7 @@ const Game = ({ history }) => {
         if (!id) {
             history.push('/');
         } else {
-            axios.get(requestRoutes.userProgress, { userId: id}).then(res => {
+            axios.get(`${requestRoutes.userProgress}${id}`).then(res => {
                 if (res.data.movies.every(movie => movie.isDefeated)) {
                     setGameOver(true);
                     setVictoriousModal(true);
@@ -96,7 +96,6 @@ const Game = ({ history }) => {
                 } else {
                     setCapturedMonsters(res.data.movies.filter(mov => mov.isDefeated).length);
                 }
-                setCurPosition(res.data.pos);
             }).catch(err => console.log(err));
             setCapturedMonsters(1);
         }
@@ -127,14 +126,6 @@ const Game = ({ history }) => {
     const handleLeaveGame = () => {
         localStorage.removeItem('currentUser');
         history.push('/');
-    }
-
-    const handleSaveGame = () => {
-        if (localStorage.getItem('currentUser')) {
-            axios.post(requestRoutes.saveGame, {userId: localStorage.getItem('currentUser')}).catch(err => console.log(err));
-        } else {
-            history.push('/');
-        }
     }
 
     return (
@@ -168,7 +159,7 @@ const Game = ({ history }) => {
 
             <div className="gameOptions">
                 <Button variant="contained" color="secondary" onClick={handleLeaveGame}>Cancel</Button>
-                {!isGameOver &&<Button variant="contained" color="primary" onClick={handleSaveGame}>Save</Button>}
+                {!isGameOver &&<Button variant="contained" color="primary">Save</Button>}
             </div>
 
             <Modal
