@@ -19,6 +19,10 @@ const useStyles = makeStyles(theme => ({
     appBar: {
         marginBottom: '20px',
         padding: '16px 0',
+    },
+    title: {
+        maxWidth: '200px',
+        wordBreak: 'all',
     }
   }));
 
@@ -32,7 +36,7 @@ const Galery = ({ history }) => {
             history.push('/');
         } else {
             // api call for all movies
-            axios.get(requestRoutes.userProgress, { userId: localStorage.getItem('currentUser')}).then(res => {
+            axios.get(`${requestRoutes.userProgress}${localStorage.getItem('currentUser')}`).then(res => {
                 setInfo(res.data.movies)
             }).catch(err => {
                 console.log(err);
@@ -52,7 +56,7 @@ const Galery = ({ history }) => {
                 <div key={movie.id} className="moviemonsterItem">
                     <Paper className={classes.root}>
                         <img src={movie.poster} alt={movie.name} className={`moviemonsterPic ${movie.isDefeated ? '' : 'notDefeated'}`} />
-                        <Typography variant="h5" component="h3">
+                        <Typography variant="h5" component="h3" className={classes.title}>
                             {movie.name}
                         </Typography>
                     </Paper>
