@@ -16,8 +16,11 @@ const Home = ({ history }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleLoadGames = event => {
-        setAnchorEl(event.currentTarget);
-        axios.get(requestRoutes.allGame).then(response => setSavedGames(response.data)).catch(error => console.log(error));
+        axios.get(`${requestRoutes.allGames}`).then(response => {
+            console.log(response.data)
+            setSavedGames(response.data)
+            setAnchorEl(event.currentTarget);
+        }).catch(error => console.log(error));
     };
 
     const handleStartGame = userGame => {

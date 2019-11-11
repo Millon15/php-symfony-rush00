@@ -2,7 +2,7 @@ const requestRoutes = {
     createUser: 'http://localhost:8000/create-user',
     allGames: 'http://localhost:8000/saved-game',
     userProgress: 'http://localhost:8000/user-progress?userId=',
-    fight: 'http://localhost:8000/fight-conditions?userId=',
+    fight: 'http://localhost:8000/fight-condinions?userId=',
     endOfGame: 'http://localhost:8000/game-over',
 }
 
