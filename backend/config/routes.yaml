@@ -17,12 +17,12 @@ user_progress:
   controller: App\Controller\UserController::userProgress
   methods:    GET
 
-#fight_condinions:
-#  path:       /fight-condinions
-#  controller: App\Controller\UserController::fightCondinions
-#  methods:    GET
+fight_condinions:
+  path:       /fight-condinions
+  controller: App\Controller\UserController::fightCondinions
+  methods:    GET
 
-#game_over:
-#  path:       /game-over
-#  controller: App\Controller\UserController::gameOver
-#  methods:    POST
+game_over:
+  path:       /game-over
+  controller: App\Controller\UserController::gameOver
+  methods:    POST
