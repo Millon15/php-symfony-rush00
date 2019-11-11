@@ -1,17 +1,17 @@
-Post "/create-user"
+POST /create-user
 RequestBody: userName
 Response: id
 
-Get "/saved-games"
+GET /saved-games
 Response: [{userName: string, userId: string, createdAt: timestamp}]
 
-Get "/user-progress"
+GET /user-progress
 Request body: userId
-Response: {movies: [{poster: someUrl, name: string, isDefeated: boolean}]
+Response: {movies: [{poster: someUrl, name: string, isDefeated: boolean}]}
 
-Get "/fight-condinions"
-?Request: userId
+GET /fight-condinions
+Request: userId
 Response: {userInfo: {hp: float, damage: int}, enemy: {id: string, hp: float, damage: int, poster: some Url}}
 
-Post "/game-over"
+POST /game-over
 Request: {userId: string, movieId: string}

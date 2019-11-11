@@ -7,12 +7,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\FileWriter;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Class UserController
  * @package App\Controller
  */
-class UserController
+class UserController extends AbstractController
 {
     /**
      * @param FileWriter $userFile
@@ -98,6 +99,21 @@ class UserController
             ];
         }
 
-        return new Response(json_encode($usersToReturn));
+        return $this->json($usersToReturn);
+    }
+
+    public function userProgress(FileWriter $userFile, Request $request): Response
+    {
+        $userId = json_decode($request->getContent(), true)['userId']
+                           ?? $request->query->get('userId');
+        if (!$userId) {
+            throw new \RuntimeException("Can't retreive user id!");
+        }
+        $user = $userFile->read()[$userId] ?? null;
+        if (!$user) {
+            throw new \RuntimeException("Can't retreive user info for the user id: " . $userId);
+        }
+
+        return $this->json(['movies' => $user['movies']]);
     }
 }

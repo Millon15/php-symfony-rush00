@@ -12,10 +12,10 @@ saved_games:
   controller: App\Controller\UserController::savedGames
   methods:    GET
 
-#user_progress:
-#  path:       /user-progress
-#  controller: App\Controller\UserController::userProgress
-#  methods:    POST
+user_progress:
+  path:       /user-progress
+  controller: App\Controller\UserController::userProgress
+  methods:    GET
 
 #fight_condinions:
 #  path:       /fight-condinions
