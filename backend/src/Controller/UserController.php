@@ -50,6 +50,11 @@ class UserController extends AbstractController
                 $response = json_decode($client
                     ->request('GET', "http://www.omdbapi.com/?i=tt00{$page}&type=movie&apikey=3fe767b6")
                     ->getContent(), true);
+                try {
+                    $client->request('GET', $response['Poster'] ?? 'N/A');
+                } catch (\Throwable $e) {
+                    continue;
+                }
             } while ($response['Response'] !== 'True'
                      || !isset($response['Title'], $response['Poster'])
                      || $response['Poster'] === 'N/A');

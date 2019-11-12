@@ -62,7 +62,7 @@ class FileWriter
      */
     public function write(string $keyToWrite, array $toWrite): void
     {
-        flock($this->resource, LOCK_EX);
+        flock($this->resource, LOCK_EX | LOCK_SH);
 
         $filesize = filesize($this->fileName);
         $content = ($filesize === 0)
@@ -87,7 +87,7 @@ class FileWriter
      */
     public function update(string $keyToUpdate, array $toUpdate): void
     {
-        flock($this->resource, LOCK_EX);
+        flock($this->resource, LOCK_EX | LOCK_SH);
 
         $filesize = filesize($this->fileName);
         $content = ($filesize === 0)
@@ -108,7 +108,7 @@ class FileWriter
      */
     public function delete(string $keyToDelete): void
     {
-        flock($this->resource, LOCK_EX);
+        flock($this->resource, LOCK_EX | LOCK_SH);
 
         $filesize = filesize($this->fileName);
         $content = ($filesize === 0)
