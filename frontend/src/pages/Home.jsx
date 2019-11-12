@@ -35,6 +35,7 @@ const Home = ({ history }) => {
             display: 'flex',
             flexGrow: 1,
             justifyContent: 'space-evenly',
+            marginTop: '20px',
         },
         typography: {
             padding: theme.spacing(2),

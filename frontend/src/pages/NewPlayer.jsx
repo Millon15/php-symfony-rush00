@@ -23,20 +23,22 @@ const useStyles = makeStyles(theme => ({
 
 const NewPlayer = ({ history }) => {
     const [playerName, setPlayerName] = useState('');
-    
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         localStorage.removeItem('currentUser');
     }, [])
 
     const onCreatePlayer = () => {
         if (playerName) {
+            setLoading(true)
             axios
                 .post(requestRoutes.createUser, {userName: playerName})
                 .then(response => {
                     localStorage.setItem('currentUser', response.data);
                     history.push('/game');
                 })
-                .catch(error => console.log(error));
+                .catch(error => setLoading(false));
         }
     }
 
@@ -58,14 +60,22 @@ const NewPlayer = ({ history }) => {
                         onChange={(event) => {
                             if (event.target.value.length < 100) {
                                 setPlayerName(event.target.value);
-                            } 
+                            }
                         }}
                     />
-                    <Button variant="contained" color="primary" onClick={onCreatePlayer}>
+                    <Button variant="contained" color="primary" onClick={onCreatePlayer} disabled={loading}>
                         Create
                     </Button>
                 </Box>
             </Paper>
+            {loading && (
+                <div className="container">
+                <div className="progress progress-striped">
+                  <div className="progress-bar">
+                  </div>
+                </div>
+              </div>
+            )}
         </Container>
     )
 };

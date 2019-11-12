@@ -78,7 +78,7 @@ const Fight = ({ history }) => {
         <div className="fightContainer">
             <div className="player">
                 <Paper className={classes.root}>
-                    <img src="https://images.unsplash.com/photo-1532641415120-6ae8c0e29507?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60" alt="my-face"/>
+                    <img src="https://images.unsplash.com/photo-1475874619827-b5f0310b6e6f?ixlib=rb-1.2.1&auto=format&fit=crop&w=733&q=80" alt="my-face"/>
                     <Typography>
                         My HP: {playerInfo.hp}
                     </Typography>
