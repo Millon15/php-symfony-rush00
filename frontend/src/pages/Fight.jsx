@@ -22,7 +22,7 @@ const Fight = ({ history }) => {
             history.push('/');
         } else {
             axios
-                .get(requestRoutes.fight, {userId: currentUser})
+                .get(requestRoutes.fight, {params: {userId: currentUser}})
                 .then(response => {
                     if (response.data.isWinner) {
                         history.push('/game');
@@ -72,7 +72,7 @@ const Fight = ({ history }) => {
     const classes = useStyles();
 
     const handleLeave = () => history.push('/game');
-    
+
     return (
     <Container maxWidth="sm">
         <div className="fightContainer">
