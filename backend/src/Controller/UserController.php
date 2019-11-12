@@ -45,20 +45,21 @@ class UserController extends AbstractController
         $movies = [];
         $const = 1000000;
         for ($i = 0; $i < 10; ++$i) {
-            $page = random_int(10 ** $i % $const, $const - 1);
-            $page = (string)($const + $page);
-            $page[0] = 0;
             do {
+                $page = (string)random_int(1, $const - 1);
                 $response = json_decode($client
-                    ->request('GET', "http://www.omdbapi.com/?i=tt0{$page}&type=movie&apikey=3fe767b6")
+                    ->request('GET', "http://www.omdbapi.com/?i=tt00{$page}&type=movie&apikey=3fe767b6")
                     ->getContent(), true);
-            } while ($response['Response'] !== 'True');
+            } while ($response['Response'] !== 'True'
+                     || !isset($response['Title'], $response['Poster'])
+                     || $response['Poster'] === 'N/A');
 
             $movie = [
                 'id' => (int)$page,
-                'poster' => (($response['Poster'] ?? 'N/A') === 'N/A')
-                    ? 'https://www.genesis.com/content/dam/genesis/us/images/chromecompare/not-available-icon-lrg.svg'
-                    : $response['Poster'],
+                // 'poster' => (($response['Poster'] ?? 'N/A') === 'N/A')
+                //     ? 'https://www.genesis.com/content/dam/genesis/us/images/chromecompare/not-available-icon-lrg.svg'
+                //     : $response['Poster'],
+                'poster' => $response['Poster'],
                 'name' => $response['Title'],
                 'plot' => $response['Plot'] ?? 'N/A',
                 'year' => $response['Year'] ?? 'N/A',
@@ -75,7 +76,7 @@ class UserController extends AbstractController
             ];
 
             $movies[] = $movie;
-            $userId .= $page[strlen((string)$const) - 2];
+            $userId .= $page % 10;
         }
 
         $createdAt = date('d-m-Y H:i:s');
@@ -153,7 +154,10 @@ class UserController extends AbstractController
         if (!$user) {
             throw new RuntimeException("Can't retreive user info by user id: " . $userId);
         }
-        $movie = $user['movies'][random_int(0, 9)];
+
+        do {
+            $movie = $user['movies'][random_int(0, 9)];
+        } while ($movie['isDefeated'] === true);
 
         return $this->json([
             'userInfo' => [
