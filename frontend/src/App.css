@@ -64,6 +64,10 @@ body {
   margin-bottom: 20px;
 }
 
+.moviemonsterHolder {
+  position: relative;
+}
+
 .moviemonsterPic {
   width: 200px;
 }
@@ -84,4 +88,16 @@ body {
 .svgContainer > svg {
   width: 22px;
   fill: rgba(255, 255, 255, 0.8);
+}
+
+.victory {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.victory > svg{
+  fill: #00c853;
+  width: 45px;
+  height: 45px;
 }
