@@ -16,10 +16,9 @@ const Home = ({ history }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleLoadGames = event => {
+        setAnchorEl(event.currentTarget);
         axios.get(`${requestRoutes.allGames}`).then(response => {
-            console.log(response.data)
             setSavedGames(response.data)
-            setAnchorEl(event.currentTarget);
         }).catch(error => console.log(error));
     };
 
@@ -41,7 +40,7 @@ const Home = ({ history }) => {
             padding: theme.spacing(2),
         },
     }));
-    
+
     const classes = useStyles();
 
     return (
